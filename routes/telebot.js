@@ -1,5 +1,5 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
 const axios = require('axios');
 const cheerio = require('cheerio');
@@ -7,8 +7,8 @@ const telegramBot = require('node-telegram-bot-api');
 const cron = require('cron').CronJob;
 const token = '883159099:AAFbqlNazc8B7XifNvB-uwb_Cd0xYiy6GF0';
 const bot = new telegramBot(token, {polling: true});
-var beforeDD, beforeSB;
-var arrayDD = [], arraySB = [],
+let beforeDD, beforeSB;
+const arrayDD = [], arraySB = [],
     filterTitleArr = [];
 
 const getDD = async () => {
@@ -28,21 +28,22 @@ const getSB = async () => {
 };
 
 
-const job = new cron('*/60 * * * * *',function() {
+const job = new cron('*/30 * * * * *',function() {
     getDD().then(function(html){
-        var $ = cheerio.load(html.data),
+        let $ = cheerio.load(html.data),
             $bodyList = $('.list_news').children(),
-            $title, title, link, ix, ixLen;
+            $title, title, $naverLink, link, ix, ixLen;
 
-        $bodyList.each(function(i, elem) {
+        $bodyList.each(function() {
+            $naverLink = $(this).find('.info_group a.info:not(.press)').attr('href')
             $title = $(this).find('.news_tit');
             title = $title.text();
-            link = $title.attr('href')
+            link = $naverLink ? $naverLink : $title.attr('href')
 
             if (title.indexOf('[단독]') === 0) {
 
                 for (ix = 0, ixLen = arrayDD.length; ix < ixLen; ix++) {
-                    if (title == arrayDD[ix]) {
+                    if (title === arrayDD[ix]) {
                         return false;
                     }
                 }
@@ -66,16 +67,17 @@ const job = new cron('*/60 * * * * *',function() {
     });
 });
 
-const job2 = new cron('*/60 * * * * *',function() {
+const job2 = new cron('*/30 * * * * *',function() {
     getSB().then(function(html){
-        var $ = cheerio.load(html.data),
+        let $ = cheerio.load(html.data),
             $bodyList = $('.list_news').children(),
-            ix, ixLen, jx, jxLen, $title, title, link, titleArr, titleFilterCnt = 0;
+            ix, ixLen, jx, jxLen, $title, title, $naverLink, link, titleArr, titleFilterCnt = 0;
 
-        $bodyList.each(function (i, elem) {
+        $bodyList.each(function () {
+            $naverLink = $(this).find('.info_group a.info:not(.press)').attr('href')
             $title = $(this).find('.news_tit');
             title = $title.text();
-            link = $title.attr('href')
+            link = $naverLink ? $naverLink : $title.attr('href')
 
             if (title.indexOf('[속보]') === 0) {
                 titleArr = title.replace('[속보]', '').split(' ');
@@ -93,7 +95,7 @@ const job2 = new cron('*/60 * * * * *',function() {
                 }
 
                 for (ix = 0, ixLen = arraySB.length; ix < ixLen; ix++) {
-                    if (title == arraySB[ix]) {
+                    if (title === arraySB[ix]) {
                         return false;
                     }
                 }
