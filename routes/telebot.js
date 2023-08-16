@@ -82,6 +82,8 @@ const job2 = new cron('*/30 * * * * *',function() {
             if (title.indexOf('[속보]') === 0) {
                 titleArr = title.replace('[속보]', '').split(' ');
 
+                console.log(filterTitleArr)
+
                 for (ix = 0, ixLen = filterTitleArr.length; ix < ixLen; ix++) {
                     for (jx = 0, jxLen = titleArr.length; jx < jxLen; jx++) {
                         if (filterTitleArr[ix].indexOf(titleArr[jx]) > 0) {
