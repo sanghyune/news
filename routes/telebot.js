@@ -1,10 +1,12 @@
+process.env.NTBA_FIX_319 = 1;
+
 const express = require('express');
 const router = express.Router();
 
 const axios = require('axios');
 const cheerio = require('cheerio');
 const telegramBot = require('node-telegram-bot-api');
-const cron = require('cron').CronJob;
+const cron = require('node-cron');
 const token = '883159099:AAFbqlNazc8B7XifNvB-uwb_Cd0xYiy6GF0';
 const bot = new telegramBot(token, {polling: true});
 let beforeDD, beforeSB;
@@ -27,8 +29,8 @@ const getSB = async () => {
     }
 };
 
-
-const job = new cron('*/10 * * * * *',function() {
+cron.schedule('*/10 * * * * *',function() {
+    console.log(123)
     getDD().then(function(html){
         if (!html) return
 
@@ -71,7 +73,8 @@ const job = new cron('*/10 * * * * *',function() {
     });
 });
 
-const job2 = new cron('*/10 * * * * *',function() {
+cron.schedule('*/10 * * * * *',function() {
+    console.log(456)
     getSB().then(function(html){
         if (!html) return
 
@@ -133,14 +136,8 @@ const job2 = new cron('*/10 * * * * *',function() {
     });
 });
 
-job.start();
-job2.start();
-
-
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-
-
 });
 
 module.exports = router;
