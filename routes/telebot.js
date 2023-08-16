@@ -30,10 +30,7 @@ const getSB = async () => {
 };
 
 cron.schedule('*/10 * * * * *',function() {
-    console.log(123)
     getDD().then(function(html){
-        if (!html) return
-
         let $ = cheerio.load(html.data),
             $bodyList = $('.list_news').children(),
             $title, title, $naverLink, link, ix, ixLen;
@@ -74,10 +71,7 @@ cron.schedule('*/10 * * * * *',function() {
 });
 
 cron.schedule('*/10 * * * * *',function() {
-    console.log(456)
     getSB().then(function(html){
-        if (!html) return
-
         let $ = cheerio.load(html.data),
             $bodyList = $('.list_news').children(),
             ix, ixLen, jx, jxLen, $title, title, $naverLink, link, titleArr, titleFilterCnt = 0;
