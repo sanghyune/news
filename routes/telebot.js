@@ -17,7 +17,7 @@ const getDD = async () => {
     try {
         return await axios.get("https://search.naver.com/search.naver?sm=tab_hty.top&where=news&query=%5B%EB%8B%A8%EB%8F%85%5D&oquery=%5B%EB%8B%A8%EB%8F%85%5D&tqi=iLzu2wprvmsssChlRe0ssssst18-060505&nso=so%3Add%2Cp%3Aall&mynews=0&office_section_code=0&office_type=0&pd=0&photo=0&sort=1");
     } catch (error) {
-        // console.error(error);
+        console.error(error);
     }
 };
 
@@ -25,7 +25,7 @@ const getSB = async () => {
     try {
         return await axios.get("https://search.naver.com/search.naver?where=news&query=%5B%EC%86%8D%EB%B3%B4%5D&sm=tab_opt&sort=1&photo=0&field=0&pd=0&ds=&de=&docid=&related=0&mynews=0&office_type=0&office_section_code=0&news_office_checked=&nso=so%3Add%2Cp%3Aall&is_sug_officeid=0");
     } catch (error) {
-        // console.error(error);
+        console.error(error);
     }
 };
 
