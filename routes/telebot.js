@@ -29,7 +29,7 @@ const getSB = async () => {
     }
 };
 
-cron.schedule('*/10 * * * * *',function() {
+cron.schedule('*/3 * * * * *',function() {
     getDD().then(function(html){
         let $ = cheerio.load(html.data),
             $bodyList = $('.list_news').children(),
@@ -41,6 +41,8 @@ cron.schedule('*/10 * * * * *',function() {
             title = $title.text();
             link = $naverLink ? $naverLink : $title.attr('href')
 
+            console.log(title)
+
             if (title.indexOf('[단독]') === 0) {
 
                 for (ix = 0, ixLen = arrayDD.length; ix < ixLen; ix++) {
@@ -51,12 +53,12 @@ cron.schedule('*/10 * * * * *',function() {
 
                 if (beforeDD) {
                     if (beforeDD !== title) {
-                        console.log(title)
-                        bot.sendMessage('@further_newss', title + '\n' + link);
+                        // console.log(title)
+                        // bot.sendMessage('@further_newss', title + '\n' + link);
                     }
                 } else {
-                    console.log(title)
-                    bot.sendMessage('@further_newss', title + '\n' + link);
+                    // console.log(title)
+                    // bot.sendMessage('@further_newss', title + '\n' + link);
                 }
 
                 beforeDD = title;
@@ -70,7 +72,7 @@ cron.schedule('*/10 * * * * *',function() {
     });
 });
 
-cron.schedule('*/10 * * * * *',function() {
+cron.schedule('*/3 * * * * *',function() {
     getSB().then(function(html){
         let $ = cheerio.load(html.data),
             $bodyList = $('.list_news').children(),
@@ -81,6 +83,8 @@ cron.schedule('*/10 * * * * *',function() {
             $title = $(this).find('.news_tit');
             title = $title.text();
             link = $naverLink ? $naverLink : $title.attr('href')
+
+            console.log(title)
 
             if (title.indexOf('[속보]') === 0) {
                 titleArr = title.replace('[속보]', '').split(' ');
@@ -103,15 +107,17 @@ cron.schedule('*/10 * * * * *',function() {
                     }
                 }
 
+
+
                 // 없으면 -> 초기엔 보낸다
                 if (beforeSB) {
                     if (beforeSB !== title) {
-                        console.log(title)
-                        bot.sendMessage('@further_newss', title + '\n' + link);
+                        // console.log(title)
+                        // bot.sendMessage('@further_newss', title + '\n' + link);
                     }
                 } else {
-                    console.log(title)
-                    bot.sendMessage('@further_newss', title + '\n' + link);
+                    // console.log(title)
+                    // bot.sendMessage('@further_newss', title + '\n' + link);
                 }
 
                 beforeSB = title;
