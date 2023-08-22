@@ -29,7 +29,7 @@ const getSB = async () => {
     }
 };
 
-cron.schedule('*/3 * * * * *',function() {
+cron.schedule('*/30 * * * * *',function() {
     getDD().then(function(html){
         if (!html) return;
 
@@ -74,7 +74,7 @@ cron.schedule('*/3 * * * * *',function() {
     });
 });
 
-cron.schedule('*/3 * * * * *',function() {
+cron.schedule('*/30 * * * * *',function() {
     getSB().then(function(html){
         if (!html) return;
 
