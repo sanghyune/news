@@ -31,6 +31,8 @@ const getSB = async () => {
 
 cron.schedule('*/3 * * * * *',function() {
     getDD().then(function(html){
+        if (!html) return;
+
         let $ = cheerio.load(html.data),
             $bodyList = $('.list_news').children(),
             $title, title, $naverLink, link, ix, ixLen;
@@ -74,6 +76,8 @@ cron.schedule('*/3 * * * * *',function() {
 
 cron.schedule('*/3 * * * * *',function() {
     getSB().then(function(html){
+        if (!html) return;
+
         let $ = cheerio.load(html.data),
             $bodyList = $('.list_news').children(),
             ix, ixLen, jx, jxLen, $title, title, $naverLink, link, titleArr, titleFilterCnt = 0;
