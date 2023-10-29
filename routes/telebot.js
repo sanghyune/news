@@ -1,12 +1,10 @@
-process.env.NTBA_FIX_319 = 1;
-
 const express = require('express');
 const router = express.Router();
 
 const axios = require('axios');
 const cheerio = require('cheerio');
 const telegramBot = require('node-telegram-bot-api');
-const cron = require('node-cron');
+const cron = require('cron').CronJob;
 const token = '883159099:AAFbqlNazc8B7XifNvB-uwb_Cd0xYiy6GF0';
 const bot = new telegramBot(token, {polling: true});
 let beforeDD, beforeSB;
@@ -17,7 +15,7 @@ const getDD = async () => {
     try {
         return await axios.get("https://search.naver.com/search.naver?sm=tab_hty.top&where=news&query=%5B%EB%8B%A8%EB%8F%85%5D&oquery=%5B%EB%8B%A8%EB%8F%85%5D&tqi=iLzu2wprvmsssChlRe0ssssst18-060505&nso=so%3Add%2Cp%3Aall&mynews=0&office_section_code=0&office_type=0&pd=0&photo=0&sort=1");
     } catch (error) {
-        console.error(error);
+        // console.error(error);
     }
 };
 
@@ -25,13 +23,14 @@ const getSB = async () => {
     try {
         return await axios.get("https://search.naver.com/search.naver?where=news&query=%5B%EC%86%8D%EB%B3%B4%5D&sm=tab_opt&sort=1&photo=0&field=0&pd=0&ds=&de=&docid=&related=0&mynews=0&office_type=0&office_section_code=0&news_office_checked=&nso=so%3Add%2Cp%3Aall&is_sug_officeid=0");
     } catch (error) {
-        console.error(error);
+        // console.error(error);
     }
 };
 
-cron.schedule('*/30 * * * * *',function() {
+
+const job = new cron('*/10 * * * * *',function() {
     getDD().then(function(html){
-        if (!html) return;
+        if (!html) return
 
         let $ = cheerio.load(html.data),
             $bodyList = $('.list_news').children(),
@@ -43,8 +42,6 @@ cron.schedule('*/30 * * * * *',function() {
             title = $title.text();
             link = $naverLink ? $naverLink : $title.attr('href')
 
-            console.log(title)
-
             if (title.indexOf('[단독]') === 0) {
 
                 for (ix = 0, ixLen = arrayDD.length; ix < ixLen; ix++) {
@@ -55,12 +52,12 @@ cron.schedule('*/30 * * * * *',function() {
 
                 if (beforeDD) {
                     if (beforeDD !== title) {
-                        // console.log(title)
-                        // bot.sendMessage('@further_newss', title + '\n' + link);
+                        console.log(title)
+                        bot.sendMessage('@further_newss', title + '\n' + link);
                     }
                 } else {
-                    // console.log(title)
-                    // bot.sendMessage('@further_newss', title + '\n' + link);
+                    console.log(title)
+                    bot.sendMessage('@further_newss', title + '\n' + link);
                 }
 
                 beforeDD = title;
@@ -74,9 +71,9 @@ cron.schedule('*/30 * * * * *',function() {
     });
 });
 
-cron.schedule('*/30 * * * * *',function() {
+const job2 = new cron('*/10 * * * * *',function() {
     getSB().then(function(html){
-        if (!html) return;
+        if (!html) return
 
         let $ = cheerio.load(html.data),
             $bodyList = $('.list_news').children(),
@@ -87,8 +84,6 @@ cron.schedule('*/30 * * * * *',function() {
             $title = $(this).find('.news_tit');
             title = $title.text();
             link = $naverLink ? $naverLink : $title.attr('href')
-
-            console.log(title)
 
             if (title.indexOf('[속보]') === 0) {
                 titleArr = title.replace('[속보]', '').split(' ');
@@ -111,17 +106,15 @@ cron.schedule('*/30 * * * * *',function() {
                     }
                 }
 
-
-
                 // 없으면 -> 초기엔 보낸다
                 if (beforeSB) {
                     if (beforeSB !== title) {
-                        // console.log(title)
-                        // bot.sendMessage('@further_newss', title + '\n' + link);
+                        console.log(title)
+                        bot.sendMessage('@further_newss', title + '\n' + link);
                     }
                 } else {
-                    // console.log(title)
-                    // bot.sendMessage('@further_newss', title + '\n' + link);
+                    console.log(title)
+                    bot.sendMessage('@further_newss', title + '\n' + link);
                 }
 
                 beforeSB = title;
@@ -140,8 +133,14 @@ cron.schedule('*/30 * * * * *',function() {
     });
 });
 
+job.start();
+job2.start();
+
+
 /* GET users listing. */
 router.get('/', function(req, res, next) {
+
+
 });
 
 module.exports = router;
